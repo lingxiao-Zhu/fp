@@ -38,8 +38,3 @@ MayBe.of("Larry")
   .map(() => undefined)
   .map(() => undefined)
   .map((x) => "Mr, " + x);
-
-/**
- * MayBe存在一个问题，那就是不知道实在具体哪一步造成的null或者undefined
- * 这时候需要Either。
- */
