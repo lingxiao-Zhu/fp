@@ -38,3 +38,5 @@ MayBe.of("Larry")
   .map(() => undefined)
   .map(() => undefined)
   .map((x) => "Mr, " + x);
+
+module.exports = MayBe;
