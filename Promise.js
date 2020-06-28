@@ -1,16 +1,15 @@
-const isMyPromise = (target) => target instanceof MyPromise;
-const isFunction = (fn) =>
-  Object.prototype.toString.call(fn) === "[object Function]";
+const isMyPromise = target => target instanceof MyPromise;
+const isFunction = fn => Object.prototype.toString.call(fn) === '[object Function]';
 
 // 定义 Promise 的三种状态
-const PENDING = "PENDING";
-const FULFILLED = "FULFILLED";
-const REJECTED = "REJECTED";
+const PENDING = 'PENDING';
+const FULFILLED = 'FULFILLED';
+const REJECTED = 'REJECTED';
 
 // Promise是一种Monad实现
 function MyPromise(executor) {
   if (!isFunction(executor)) {
-    throw new Error("MyPromise must accept a function as a parameter");
+    throw new Error('MyPromise must accept a function as a parameter');
   }
   this._status = PENDING;
   this._value = undefined;
@@ -61,7 +60,7 @@ MyPromise.prototype._reject = function (reason) {
 MyPromise.prototype.then = function (onFulfilled, onRejected) {
   return new MyPromise((resolve, reject) => {
     // 成功时执行的函数
-    const fulfilledHandler = (value) => {
+    const fulfilledHandler = value => {
       try {
         if (isFunction(onFulfilled)) {
           const res = onFulfilled(value);
@@ -83,7 +82,7 @@ MyPromise.prototype.then = function (onFulfilled, onRejected) {
     };
 
     // 失败时执行的函数，实现上同成功时执行的函数
-    const rejectedHandler = (reason) => {
+    const rejectedHandler = reason => {
       try {
         if (isFunction(onRejected)) {
           const res = onRejected(reason);
@@ -127,13 +126,21 @@ MyPromise.prototype.then = function (onFulfilled, onRejected) {
  */
 MyPromise.prototype.finally = function (cb) {
   return this.then(
-    (value) => {
+    value => {
       isFunction(cb) && cb();
       return value;
     },
-    (reason) => {
+    reason => {
       isFunction(cb) && cb();
       throw reason;
-    }
+    },
   );
 };
+
+/**
+ * 方法返回一个 Promise 实例，所有的 promise 都“完成（resolved）”或参数中不包含 promise 时回调完成（resolve）；
+ * 如果参数中  promise 有一个失败（rejected），此实例回调失败（reject），失败的原因是第一个失败 promise 的结果。
+ * @param {Iterable} arr
+ * @returns {MyPromise}
+ */
+MyPromise.all = function (arr) {};
