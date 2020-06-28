@@ -1,5 +1,7 @@
 const isMyPromise = target => target instanceof MyPromise;
 const isFunction = fn => Object.prototype.toString.call(fn) === '[object Function]';
+const isLength = value => typeof value == 'number' && value > -1 && value % 1 == 0;
+const isArrayLike = value => value != null && isLength(value.length) && !isFunction(value);
 
 // 定义 Promise 的三种状态
 const PENDING = 'PENDING';
@@ -143,4 +145,26 @@ MyPromise.prototype.finally = function (cb) {
  * @param {Iterable} arr
  * @returns {MyPromise}
  */
-MyPromise.all = function (arr) {};
+MyPromise.all = function (arr) {
+  if (!isArrayLike(arr)) {
+    throw new Error(`${arr} is not iterable (cannot read property Symbol(Symbol.iterator)`);
+  }
+
+  return new MyPromise((resolve, reject) => {
+    const values = [];
+    let i = 0;
+    while (i < arr.length) {
+      const current = arr[i];
+      if (isMyPromise(current)) {
+        current.then(
+          value => values.push(value),
+          reason => reject(reason),
+        );
+      } else {
+        values.push(current);
+      }
+      i++;
+    }
+    resolve(values);
+  });
+};
