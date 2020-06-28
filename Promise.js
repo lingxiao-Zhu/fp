@@ -118,3 +118,22 @@ MyPromise.prototype.then = function (onFulfilled, onRejected) {
     }
   });
 };
+
+/**
+ * 在promise结束时，无论结果是fulfilled或者是rejected，都会执行指定的回调函数
+ * 由于无法知道promise的最终状态，所以finally的回调函数中不接收任何参数，它仅用于无论最终结果如何都要执行的情况。
+ * @param {function} cb
+ * @returns {MyPromise}
+ */
+MyPromise.prototype.finally = function (cb) {
+  return this.then(
+    (value) => {
+      isFunction(cb) && cb();
+      return value;
+    },
+    (reason) => {
+      isFunction(cb) && cb();
+      throw reason;
+    }
+  );
+};
