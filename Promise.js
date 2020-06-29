@@ -149,7 +149,6 @@ MyPromise.all = function (arr) {
   if (!isArrayLike(arr)) {
     throw new Error(`${arr} is not iterable (cannot read property Symbol(Symbol.iterator)`);
   }
-
   return new MyPromise((resolve, reject) => {
     const values = [];
     let i = 0;
@@ -157,7 +156,10 @@ MyPromise.all = function (arr) {
       const current = arr[i];
       if (isMyPromise(current)) {
         current.then(
-          value => values.push(value),
+          value => {
+            values.push(value);
+            if (i >= arr.length) resolve(values);
+          },
           reason => reject(reason),
         );
       } else {
@@ -165,6 +167,5 @@ MyPromise.all = function (arr) {
       }
       i++;
     }
-    resolve(values);
   });
 };
